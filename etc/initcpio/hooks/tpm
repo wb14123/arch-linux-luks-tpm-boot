@@ -11,11 +11,12 @@ run_hook() {
         /sbin/tcsd
     fi
 
+    # Create necessary lo interface
+    ifconfig lo 127.0.0.1
+    echo 127.0.0.1 localhost > /etc/hosts
+
     # Get key from TPM NVRAM
     echo TPM... getting secret from NVRAM
     /etc/tpm-secret/tpm_getsecret.sh > /secret_key.bin
     chmod 0400 /secret_key.bin
 }
-
-# Run as `/etc/hooks/tpm run_hook` to run the function()
-"$@"

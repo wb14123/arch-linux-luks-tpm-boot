@@ -12,9 +12,17 @@ local_add_conf() {
     if [[ ! $result -eq 0 ]]; then
         grep "$1" "$2" >> "$BUILDROOT/$2"
     fi
+
 }
 
 build() {
+    # Copy necessary libnss libraries
+    add_file /usr/lib/libnss_mymachines.so.2
+    add_file /usr/lib/libnss_files-2.*.so
+    add_file /usr/lib/libnss_dns-2.*.so
+    add_symlink /usr/lib/libnss_files.so.2
+    add_symlink /usr/lib/libnss_dns.so.2
+
     # Copy the daemon incl. dependencies + config to the initrd
     add_binary /usr/bin/tcsd
     add_file   /etc/tcsd.conf
@@ -43,25 +51,6 @@ build() {
     # This will copy runtime /etc/initcpio/hooks/tpm to $BUILDROOT/hooks/tpm
     add_runscript
 
-    # However, with systemd based initramfs, the runtime hooks are ignored and
-    # we must execute via systemd.service file
-    cat >"$BUILDROOT/usr/lib/systemd/system/tpm.service" <<EOF
-[Unit]
-Description=Get secret from TPM NVRAM
-Before=cryptsetup-pre.target
-DefaultDependencies=no
-
-[Service]
-Type=oneshot
-RemainAfterExit=yes
-ExecStartPre=/usr/bin/modprobe tpm_tis
-ExecStart=/hooks/tpm run_hook
-EOF
-
-    add_systemd_unit cryptsetup-pre.target
-    cd "$BUILDROOT/usr/lib/systemd/system/sysinit.target.wants"
-    ln -sf ../cryptsetup-pre.target cryptsetup-pre.target
-    ln -sf ../tpm.service           tpm.service
 }
 
 help() {
