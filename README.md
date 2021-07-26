@@ -227,7 +227,7 @@ $ cat /etc/crypttab.initramfs
 cryptlvm1      UUID=b561874e-ce31-4721-bde7-1f8e7b728846    /secret_key.bin
 ```
 
-> NOTE: If you chose to use busybox based initramfs, put this to `/etc/crypttab` instead.
+> NOTE: If you chose to use busybox based initramfs, add `cryptkey` [kernel param](https://wiki.archlinux.org/title/Dm-crypt/System_configuration#cryptkey): `cryptkey=rootfs:/secret_key.bin`
 
 Where cryptlvm1 can be any string, UUID is the /dev/disk/by-uuid/UUID of your encrypted partition (`sda4` in my case) and the last parameter is a path to the LUKS key file (within initramfs).
 

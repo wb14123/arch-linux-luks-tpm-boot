@@ -26,7 +26,7 @@ build() {
     # Copy the daemon incl. dependencies + config to the initrd
     add_binary /usr/bin/tcsd
     add_file   /etc/tcsd.conf
-    chown tss:tss "$BUILDROOT/etc/tcsd.conf"
+    chown root:tss "$BUILDROOT/etc/tcsd.conf"
 
     # Copy the TPM configuration
     add_full_dir /var/lib/tpm
