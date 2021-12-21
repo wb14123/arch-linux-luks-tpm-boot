@@ -3,6 +3,11 @@
 run_hook() {
     # Configure TPM
     chown tss:tss /dev/tpm0
+    
+    # not sure why mkinitcpio install scripy didn't change the permission correctly
+    # so need to change it here manually
+    chown 0:tss /etc/tcsd.conf
+    
     chmod 600 /dev/tpm0
     sleep 1
 
